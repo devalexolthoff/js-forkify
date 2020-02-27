@@ -1,5 +1,5 @@
 import Search from './models/Search';
-import * as SearchView from './views/searchView';
+import * as SearchView from './views/SearchView';
 import {
   elements,
   renderLoader,
@@ -11,28 +11,51 @@ Current recipe object
 shopping list object
 linked recipes
 */
-const state = {
+const state = {};
 
-}
-elements.searchform.addEventListener('submit', (e) => {
-  e.preventDefault();
-  controlSearch();
-})
+
 const controlSearch = async () => {
-  // Get search query
   const query = SearchView.getInput();
 
   if (query) {
-    // create search object
-    state.search = new Search(query)
+    state.search = new Search(query);
+
+    SearchView.clearInput();
+    SearchView.clearResults();
+    renderLoader(elements.loaderSpace);
+
+    try {
+      // 4) Search for recipes
+      await state.search.getResults();
+
+      clearLoader();
+      SearchView.renderResults(state.search.result);
+    } catch (err) {
+      alert('Something wrong with the search...');
+      clearLoader();
+    }
   }
-  // Prepare UI for what will happen
-  SearchView.clearInput();
+}
+
+elements.searchform.addEventListener('submit', e => {
+  e.preventDefault();
+  controlSearch();
+});
+
+
+elements.searchResultsList.parentNode.addEventListener('click', e => {
+  let button;
+  if (`${e.target}`.includes('Span')) {
+    button = e.target.parentNode;
+  } else if (`${e.target}`.includes('Button')) {
+    button = e.target
+  }
+  if (button) {
+    turnPage(button)
+  }
+});
+const turnPage = btn => {
+  const goToPage = parseInt(btn.dataset.goto, 10);
   SearchView.clearResults();
-  renderLoader(elements.loaderSpace);
-  //search of recipes
-  await state.search.getResults();
-  //Display results on UI
-  clearLoader()
-  SearchView.renderResults(state.search.result);
+  SearchView.renderResults(state.search.result, goToPage);
 }
