@@ -1,5 +1,6 @@
 import Search from './models/Search';
-import * as SearchView from './views/SearchView';
+import Recipe from './models/Recipe';
+import * as SearchView from './views/searchView';
 import {
   elements,
   renderLoader,
@@ -59,3 +60,9 @@ const turnPage = btn => {
   SearchView.clearResults();
   SearchView.renderResults(state.search.result, goToPage);
 }
+
+// Recipe Controller
+
+const r = new Recipe(35626)
+r.getRecipe();
+console.log(r)
