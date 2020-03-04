@@ -1,6 +1,7 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import * as SearchView from './views/searchView';
+import * as RecipeView from './views/recipeView';
 import {
   elements,
   renderLoader,
@@ -63,6 +64,24 @@ const turnPage = btn => {
 
 // Recipe Controller
 
-const r = new Recipe(35626)
-r.getRecipe();
-console.log(r)
+const controlRecipe = async () => {
+  const id = window.location.hash.replace('#','');
+  if (id){
+    // Prep UC
+    // Create new recipe
+    state.recipe = new Recipe(id)
+    // Get recipe data
+    try {
+      await state.recipe.getRecipe();
+      state.recipe.parseIngredients()
+      // Calculate servings and time
+      state.recipe.calcTime();
+      state.recipe.calcServings();
+      // Render RecipeS
+    } catch (error) {
+      alert('Error processing recipe')
+    }
+  }
+}
+
+['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe))
