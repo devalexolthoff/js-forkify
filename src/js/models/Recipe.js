@@ -30,7 +30,7 @@ export default class Recipe {
     parseIngredients(){
         const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds']
         const unitsShort = ['tsbp', 'tsbp', 'oz', 'oz','tsp','tsp', 'cup', 'pound']
-        const = [...unitsShort, 'kg','g']
+        const units = [...unitsShort, 'kg','g']
         const newIngredients = this.ingredients.map(el => {
             let ingredient = el.toLowerCase()
             unitsLong.forEach((unit,i)=> {
@@ -70,7 +70,6 @@ export default class Recipe {
                     ingredient
                 }
             }
-            console.log('test')
             return objIng
         })
         this.ingredients = newIngredients

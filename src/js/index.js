@@ -70,6 +70,7 @@ const controlRecipe = async () => {
     // Prep Ui
     RecipeView.clearRecipe()
     renderLoader(elements.recipe)
+    if(state.search) SearchView.highlightSelected(id)
     // Create new recipe
     state.recipe = new Recipe(id)
     // Get recipe data
@@ -80,7 +81,6 @@ const controlRecipe = async () => {
       state.recipe.calcTime();
       state.recipe.calcServings();
       // Render RecipeS
-      console.log('test2')
       clearLoader()
       RecipeView.renderRecipe(state.recipe)
     } catch (error) {
