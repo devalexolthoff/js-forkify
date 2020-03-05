@@ -1,9 +1,12 @@
 import Search from './models/Search';
-import * as SearchView from './views/SearchView';
+import Recipe from './models/Recipe';
+import * as SearchView from './views/searchView';
+import * as RecipeView from './views/recipeView';
 import {
   elements,
   renderLoader,
-  clearLoader
+  clearLoader,
+  elementStrings
 } from './views/base';
 /*
 Search object
@@ -59,3 +62,48 @@ const turnPage = btn => {
   SearchView.clearResults();
   SearchView.renderResults(state.search.result, goToPage);
 }
+
+// Recipe Controller
+
+const controlRecipe = async () => {
+  const id = window.location.hash.replace('#','');
+  if (id){
+    // Prep Ui
+    RecipeView.clearRecipe()
+    renderLoader(elements.recipe)
+    if(state.search) SearchView.highlightSelected(id)
+    // Create new recipe
+    state.recipe = new Recipe(id)
+    // Get recipe data
+    try {
+      await state.recipe.getRecipe();
+      state.recipe.parseIngredients()
+      // Calculate servings and time
+      state.recipe.calcTime();
+      state.recipe.calcServings();
+      // Render RecipeS
+      clearLoader()
+      RecipeView.renderRecipe(state.recipe)
+    } catch (error) {
+      alert('Error processing recipe')
+    }
+  }
+}
+// Events 
+['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe))
+
+// Event Delegation
+elements.recipe.addEventListener('click', e =>{
+  if (e.target.matches('.btn-decrease *', '.btn-decrease *')){
+    // Decrease button clicked
+    if (state.recipe.servings > 1){
+      state.recipe.updateServings('dec')
+      RecipeView.updateServingsIngredients(state.recipe)
+    }
+    
+  } else if (e.target.matches('.btn-increase *', '.btn-increase *')){
+    // Decrease button clicked
+    state.recipe.updateServings('inc')
+    RecipeView.updateServingsIngredients(state.recipe)
+  }
+})
