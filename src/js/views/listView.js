@@ -1,7 +1,7 @@
 import {elements} from './base'
 
-export const renderItem = item => {`
-                <li class="shopping__item" data-itemid=${item.id}>
+export const renderItem = item => {
+    const element = `<li class="shopping__item" data-itemid=${item.id}>
                     <div class="shopping__count">
                         <input type="number" value="${item.count}" step="${item.count}" class="shopping__count-value>
                         <p>${item.unit}</p>
@@ -13,7 +13,7 @@ export const renderItem = item => {`
                         </svg>
                     </button>
                 </li>`
-                elements.shoppingList.insertAdjacentElement('beforeend',item)
+                elements.shoppingList.innerHTML += element;
 }
 
 export const deleteItem = id => {

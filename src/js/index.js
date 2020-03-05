@@ -3,6 +3,7 @@ import Recipe from './models/Recipe';
 import List from './models/List';
 import * as SearchView from './views/searchView';
 import * as RecipeView from './views/recipeView';
+import * as ListView from './views/listView';
 import {
   elements,
   renderLoader,
@@ -64,6 +65,29 @@ const turnPage = btn => {
   SearchView.renderResults(state.search.result, goToPage);
 }
 
+// List Controller
+
+const controlList = ()=>{
+  // Create a list if needed 
+  if (!state.list) state.list = new List()
+  //Add each ingredient to the list
+  state.recipe.ingredients.forEach(ing => {
+    const item = state.list.addItem(ing.count,ing.unit,ing.ingredient)
+    ListView.renderItem(item)
+  })
+}
+
+elements.shoppingList.addEventListener('click', e => {
+  const id = e.target.closest('.shopping__item').dataset.itemid
+  if(e.target.matches('.shopping__delete *')){
+    state.list.deleteItem(id)
+    ListView.deleteItem(id)
+  } else if (e.target.matches('.shopping__count-value')){
+    const val = parseFloat(e.target.value)
+    state.list.updateCount(id,val)
+  }
+})
+
 // Recipe Controller
 
 const controlRecipe = async () => {
@@ -106,5 +130,8 @@ elements.recipe.addEventListener('click', e =>{
     // Decrease button clicked
     state.recipe.updateServings('inc')
     RecipeView.updateServingsIngredients(state.recipe)
+  } else if (e.target.matches('.recipe__btn--add *')){
+    controlList()
   }
 })
+
