@@ -5,7 +5,8 @@ import * as RecipeView from './views/recipeView';
 import {
   elements,
   renderLoader,
-  clearLoader
+  clearLoader,
+  elementStrings
 } from './views/base';
 /*
 Search object
@@ -88,5 +89,21 @@ const controlRecipe = async () => {
     }
   }
 }
-
+// Events 
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe))
+
+// Event Delegation
+elements.recipe.addEventListener('click', e =>{
+  if (e.target.matches('.btn-decrease *', '.btn-decrease *')){
+    // Decrease button clicked
+    if (state.recipe.servings > 1){
+      state.recipe.updateServings('dec')
+      RecipeView.updateServingsIngredients(state.recipe)
+    }
+    
+  } else if (e.target.matches('.btn-increase *', '.btn-increase *')){
+    // Decrease button clicked
+    state.recipe.updateServings('inc')
+    RecipeView.updateServingsIngredients(state.recipe)
+  }
+})
