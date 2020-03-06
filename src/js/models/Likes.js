@@ -3,12 +3,16 @@ export default class Likes{
         this.likes = []
     }
     addLike(id, title, author,img){
-        const like = {id,title,author, img}\
+        const like = {id,title,author, img}
         this.likes.push(like)
+        // Persist Data in Local Storage
+        this.persistData()
         return like
     }
     deleteLike(id){
         const index = this.likes.findIndex(el => el.id === id)
+        // Persist Data in Local Storage
+        this.persistData()
         this.likes.splice(index,1)
     }
     isLiked(id){
@@ -16,5 +20,13 @@ export default class Likes{
     }
     getNumLikes(){
         return this.likes.length
+    }
+    persistData(){
+        localStorage.setItem('likes', JSON.stringify(this.likes))
+    }
+    readStorage(){
+        const storage = JSON.parse(localStorage.getItem('likes'))
+        // Store our likes from before in data structure
+        if (storage) this.likes = storage
     }
 }
