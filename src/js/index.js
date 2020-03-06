@@ -1,6 +1,7 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import List from './models/List';
+import Likes from './models/Likes';
 import * as SearchView from './views/searchView';
 import * as RecipeView from './views/recipeView';
 import * as ListView from './views/listView';
@@ -114,6 +115,30 @@ const controlRecipe = async () => {
     }
   }
 }
+// Likes Controller
+const controlLike = () => {
+  if (!state.likes) state.likes = new Likes()  
+  const currentID = state.recipe.id
+  // User probably hasn't liked current recipe
+  if(!state.likes.isLiked()){
+    // Add like  to state
+    const newLike = state.likes.addLike(currentID, 
+      state.recipe.title, 
+      state.recipe.author, 
+      state.recipe.img)
+    // toggle like button
+
+    // Add liked page to UI list
+  }
+  // User has liked the current recipe
+  else {
+  // Remove like from state
+    state.likes.deleteLike(currentID)
+    // toggle like button
+
+    // Add liked page to UI list
+  }
+}
 // Events 
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe))
 
@@ -132,6 +157,9 @@ elements.recipe.addEventListener('click', e =>{
     RecipeView.updateServingsIngredients(state.recipe)
   } else if (e.target.matches('.recipe__btn--add *')){
     controlList()
+  } else if (e.target.matches('.recipe__love *')){
+    // Call like controller
+    controlLike()
   }
 })
 
