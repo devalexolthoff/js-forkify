@@ -90,7 +90,7 @@ elements.shoppingList.addEventListener('click', e => {
   }
 })
 
-state.likes = new Likes()
+
 // Recipe Controller
 
 const controlRecipe = async () => {
@@ -144,6 +144,10 @@ const controlLike = () => {
   }
   LikesView.toggleLikeMenu(state.likes.getNumLikes())
 }
+function pack(){
+  alert('Pack')
+}
+
 // Events 
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe))
 
@@ -168,3 +172,9 @@ elements.recipe.addEventListener('click', e =>{
   }
 })
 
+window.addEventListener('load', ()=> {
+  state.likes = new Likes()
+  state.likes.readStorage()
+  LikesView.toggleLikeMenu(state.likes.getNumLikes())
+  state.likes.likes.forEach(like => LikesView.renderLike(like))
+})

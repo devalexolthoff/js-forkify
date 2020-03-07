@@ -12,8 +12,8 @@ export default class Likes{
     deleteLike(id){
         const index = this.likes.findIndex(el => el.id === id)
         // Persist Data in Local Storage
-        this.persistData()
         this.likes.splice(index,1)
+        this.persistData()
     }
     isLiked(id){
         return this.likes.findIndex(el => el.id === id) !== -1
