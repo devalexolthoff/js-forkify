@@ -32,7 +32,7 @@ export const highlightSelected = id => {
     resultsArray.forEach(el => {
         el.classList.remove('results__link--active')
     })
-    document.querySelector(`a[href="#${id}"`).classList.add('results__link--active')
+    document.querySelector(`.results__link[href="#${id}"`).classList.add('results__link--active')
 }
 
 const renderRecipe = recipe => {
@@ -79,7 +79,7 @@ const renderButtons = (page, numResults, resPerPage) => {
     elements.searchResPages.insertAdjacentHTML('afterbegin', button);
 };
 
-export const renderResults = (recipes, page = 2, resPerPage = 10) => {
+export const renderResults = (recipes, page = 1, resPerPage = 10) => {
     // render results of currente page
     const start = (page - 1) * resPerPage;
     const end = page * resPerPage;

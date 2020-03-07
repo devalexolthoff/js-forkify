@@ -1,9 +1,11 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import List from './models/List';
+import Likes from './models/Likes';
 import * as SearchView from './views/searchView';
 import * as RecipeView from './views/recipeView';
 import * as ListView from './views/listView';
+import * as LikesView from './views/likesView';
 import {
   elements,
   renderLoader,
@@ -88,6 +90,7 @@ elements.shoppingList.addEventListener('click', e => {
   }
 })
 
+
 // Recipe Controller
 
 const controlRecipe = async () => {
@@ -108,12 +111,43 @@ const controlRecipe = async () => {
       state.recipe.calcServings();
       // Render RecipeS
       clearLoader()
-      RecipeView.renderRecipe(state.recipe)
+      RecipeView.renderRecipe(state.recipe, state.likes.isLiked(id))
     } catch (error) {
       alert('Error processing recipe')
     }
   }
 }
+// Likes Controller
+const controlLike = () => {
+  if (!state.likes) state.likes = new Likes()  
+  const currentID = state.recipe.id
+  // User probably hasn't liked current recipe
+  if(!state.likes.isLiked(currentID)){
+    // Add like  to state
+    const newLike = state.likes.addLike(currentID, 
+      state.recipe.title, 
+      state.recipe.author, 
+      state.recipe.img)
+    // toggle like button
+      LikesView.toggleLikeBtn(true)
+    // Add liked page to UI list
+    LikesView.renderLike(newLike)
+  }
+  // User has liked the current recipe
+  else {
+  // Remove like from state
+    state.likes.deleteLike(currentID)
+    // toggle like button
+    LikesView.toggleLikeBtn(false)
+    // Add liked page to UI list
+    LikesView.deleteLike(currentID)
+  }
+  LikesView.toggleLikeMenu(state.likes.getNumLikes())
+}
+function pack(){
+  alert('Pack')
+}
+
 // Events 
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe))
 
@@ -132,6 +166,15 @@ elements.recipe.addEventListener('click', e =>{
     RecipeView.updateServingsIngredients(state.recipe)
   } else if (e.target.matches('.recipe__btn--add *')){
     controlList()
+  } else if (e.target.matches('.recipe__love *')){
+    // Call like controller
+    controlLike()
   }
 })
 
+window.addEventListener('load', ()=> {
+  state.likes = new Likes()
+  state.likes.readStorage()
+  LikesView.toggleLikeMenu(state.likes.getNumLikes())
+  state.likes.likes.forEach(like => LikesView.renderLike(like))
+})
